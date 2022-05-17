@@ -25,7 +25,8 @@ Function Create-JsonTemplate()
             "secret_key": ""
         },
         "builders": [{
-            "type": "amazon-ebs",        
+            "type": "amazon-ebs",
+            "iam_instance_profile": "common-role",
             "access_key": "{{user ``access_key``}}",
             "secret_key": "{{user ``secret_key``}}",
             "ami_name": "$($amiName)",
@@ -78,15 +79,11 @@ Function Create-JsonTemplate()
           "provisioners": [
             {
                 "type": "powershell",    
-                "script": "./configAMI.ps1"      
-            },
-            {
-                "type": "powershell",    
                 "script": "./install.ps1"      
             },
             {
-                "type": "windows-restart",
-                "restart_timeout": "10m"
+                "type": "powershell",    
+                "script": "./configAMI.ps1"      
             },  
             {
                 "type": "powershell",
@@ -94,6 +91,10 @@ Function Create-JsonTemplate()
                     "C:\\ProgramData\\Amazon\\EC2-Windows\\Launch\\Scripts\\InitializeInstance.ps1 -Schedule",	
                     "C:\\ProgramData\\Amazon\\EC2-Windows\\Launch\\Scripts\\SysprepInstance.ps1 -NoShutdown"
                 ]
+            },
+            {
+                "type": "windows-restart",
+                "restart_timeout": "10m"
             }
           ]
     }	
